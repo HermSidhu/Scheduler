@@ -4,6 +4,27 @@ import "components/Application.scss";
 
 import DayList from 'components/DayList';
 
+import Appointment from "components/Appointment";
+
+const appointments = [
+  {
+    id: 1,
+    time: "12pm",
+  },
+  {
+    id: 2,
+    time: "1pm",
+    interview: {
+      student: "Lydia Miller-Jones",
+      interviewer: {
+        id: 1,
+        name: "Sylvia Palmer",
+        avatar: "https://i.imgur.com/LpaY82x.png",
+      }
+    }
+  }
+];
+
 const days = [
   {
     id: 1,
@@ -35,7 +56,7 @@ export default function Application(props) {
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
           <DayList
-          {...{day, days, setDay}}
+            {...{ day, days, setDay }}
           />
         </nav>
         <img
@@ -45,7 +66,16 @@ export default function Application(props) {
         />
       </section>
       <section className="schedule">
-        {/* Replace this with the schedule elements durint the "The Scheduler" activity. */}
+        {appointments.map(appointment => {
+          if (appointment.interview) {
+            return <Appointment key={appointment.id} {...appointment} />
+             
+          } else 
+            return <Appointment key={appointment.id} time={appointment.time} />
+        }
+        )
+        }
+        <Appointment key="last" time="5pm" />
       </section>
     </main>
   );
