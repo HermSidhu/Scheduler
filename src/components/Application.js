@@ -8,40 +8,49 @@ import DayList from 'components/DayList';
 
 import Appointment from "components/Appointment";
 
-import { getAppointmentsForDay } from '../helpers/selectors'
+import { getAppointmentsForDay, getInterview } from '../helpers/selectors'
 
 export default function Application(props) {
   const [state, setState] = useState({
     day: "Monday",
     days: [],
-    appointments: {}
+    appointments: {},
+    interviews: {}
   });
 
   const setDay = day => setState(state => ({ ...state, day }))
 
-  const appointmentObj = getAppointmentsForDay(state, state.day);
+  const appointments = getAppointmentsForDay(state, state.day);
 
-  const appointmentComponents = appointmentObj.map(appointment => {
-    if (appointment.interview) {
-      return <Appointment key={appointment.id} {...appointment} />
-    } else
-      return <Appointment key={appointment.id} time={appointment.time} />
-  }
-  );
+  const schedule = appointments.map((appointment) => {
+    const interview = getInterview(state, appointment.interview);
+
+    return (
+      <Appointment
+        key={appointment.id} 
+        {...appointment} 
+        interview={interview}
+      />
+    );
+  });
 
   useEffect(() => {
     Promise.all([
       axios.get('http://localhost:8001/api/days'),
       axios.get('http://localhost:8001/api/appointments'),
-    ]).then(([dayResponse, apptResponse]) => {
-      console.log(dayResponse);
+      axios.get('http://localhost:8001/api/interviewers'),
+    ]).then(([dayResponse, apptResponse, interResponse]) => {
+      console.log(interResponse);
       setState(preState => ({
         ...preState,
         days: dayResponse.data,
-        appointments: apptResponse.data
+        appointments: apptResponse.data,
+        interviewers: interResponse.data
       }));
     })
   }, []);
+
+  console.log(state.interviewers)
 
   return (
     <main className="layout">
@@ -64,7 +73,7 @@ export default function Application(props) {
         />
       </section>
       <section className="schedule">
-        {appointmentComponents}
+        {schedule}
         <Appointment key="last" time="5pm" />
       </section>
     </main>

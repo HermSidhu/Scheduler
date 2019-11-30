@@ -13,4 +13,12 @@ function getAppointmentsForDay(state, day) {
   return result;
 };
 
-export { getAppointmentsForDay };
+function getInterview(state, interview) {
+  if (!interview) return null
+  return {
+    interviewer: state.interviewers[interview.interviewer],
+    student: interview.student
+  }
+};
+
+export { getAppointmentsForDay, getInterview };
