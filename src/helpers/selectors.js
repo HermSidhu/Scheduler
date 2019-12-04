@@ -1,4 +1,4 @@
-function getAppointmentsForDay(state, day) {
+export function getAppointmentsForDay(state, day) {
   let result = [];
   state.days.forEach((weekDay) => {
     if (weekDay.name === day) {
@@ -11,14 +11,32 @@ function getAppointmentsForDay(state, day) {
   }
   )
   return result;
-};
+}
 
-function getInterview(state, interview) {
+export function getInterview(state, interview) {
   if (!interview) return null
   return {
     interviewer: state.interviewers[interview.interviewer],
     student: interview.student
   }
-};
+}
 
-export { getAppointmentsForDay, getInterview };
+export function getInterviewersForDay(state, day) {
+  let result = [];
+  state.days.forEach((weekDay) => {
+    if (weekDay.name === day) {
+      let dayApps = weekDay.appointments;
+
+      dayApps.forEach((appointmentID) => {
+        let appointment = state.appointments[appointmentID];
+
+        if (appointment.interview) {
+          let interviewerID = appointment.interview.interviewer
+          if (!result.includes(state.interviewers[interviewerID]))
+          result.push(state.interviewers[interviewerID]);
+        }
+      })
+    }
+  })
+  return result;
+}
