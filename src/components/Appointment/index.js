@@ -7,6 +7,7 @@ import Empty from 'components/Appointment/Empty';
 import Form from 'components/Appointment/Form';
 import Status from 'components/Appointment/Status';
 import Confirm from 'components/Appointment/Confirm';
+import Error from 'components/Appointment/Error';
 
 import useVisualMode from 'hooks/useVisualMode';
 import axios from 'axios';
@@ -16,12 +17,17 @@ const SHOW = "SHOW";
 const CREATE = "CREATE";
 const SAVING = "SAVING";
 const DELETING = "DELETING";
-const CONFIRM = "CONFIRM"
+const CONFIRM = "CONFIRM";
+const EDIT = "EDIT";
+const ERROR_SAVE = "ERROR_SAVE";
+const ERROR_DELETE = "ERROR_DELETE";
 
 const message = {
   saving: 'Saving...',
   deleting: 'Deleting...',
-  confirm: 'Are you sure you want to delete?'
+  confirm: 'Are you sure you want to delete?',
+  saveError: "Couldn't Save. Please try again later.",
+  deleteError: "Couldn't Delete. Please try again later."
 }
 
 export default function Appointment(props) {
@@ -31,14 +37,18 @@ export default function Appointment(props) {
   );
 
   function save(name, interviewer) {
-    transition(SAVING);
     const interview = {
       student: name,
       interviewer
     };
-    props.bookInterview(props.id, interview)
+    transition(SAVING);
     const id = props.id
-    return axios.put(`http://localhost:8000/api/appointments/${id}`, { interview }).then(() => { transition(SHOW) })
+    return axios.put(`http://localhost:8000/api/appointments/${id}`, { interview })
+      .then(() => {
+        props.bookInterview(props.id, interview);
+        return transition(SHOW);
+      })
+      .catch(() => transition(ERROR_SAVE, true))
   }
 
   function confirmDelete() {
@@ -46,11 +56,20 @@ export default function Appointment(props) {
   }
 
   function cancel() {
-    transition(DELETING);
-    props.cancelInterview(props.id)
+    transition(DELETING, true);
     const id = props.id
     return axios.delete(`http://localhost:8000/api/appointments/${id}`)
-    .then(() => { transition(EMPTY) })
+      .then(() => {
+        props.cancelInterview(props.id);
+        return transition(EMPTY);
+      })
+      .catch(() => {
+        transition(ERROR_DELETE, true);
+      })
+  }
+
+  function edit() {
+    transition(EDIT)
   }
 
   return (
@@ -63,6 +82,7 @@ export default function Appointment(props) {
           student={props.interview.student}
           interviewer={props.interview.interviewer}
           onDelete={confirmDelete}
+          onEdit={edit}
         />
       )}
 
@@ -72,7 +92,7 @@ export default function Appointment(props) {
       )}
 
       {mode === SAVING && (
-        <Status message={message.saving} 
+        <Status message={message.saving}
         />
       )}
 
@@ -82,10 +102,32 @@ export default function Appointment(props) {
       )}
 
       {mode === CONFIRM && (
-        <Confirm 
-        message = {message.confirm}
-        onCancel = {back}
-        onConfirm = {cancel}
+        <Confirm
+          message={message.confirm}
+          onCancel={back}
+          onConfirm={cancel}
+        />
+      )}
+
+      {mode === EDIT && (
+        <Form
+          interviewers={props.interviewers}
+          name={props.interview.student}
+          interviewer={props.interview.interviewer.id}
+          onCancel={back}
+          onSave={save}
+        />
+      )}
+
+      {mode === ERROR_SAVE && (
+        <Error
+          message={message.saveError} onClose={back}
+        />
+      )}
+
+      {mode === ERROR_DELETE && (
+        <Error
+          message={message.deleteError} onClose={back}
         />
       )}
 
