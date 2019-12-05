@@ -41,6 +41,7 @@ export default function Appointment(props) {
       student: name,
       interviewer
     };
+    if (interview.student && interview.interviewer) {
     transition(SAVING);
     const id = props.id
     return axios.put(`http://localhost:8000/api/appointments/${id}`, { interview })
@@ -49,6 +50,8 @@ export default function Appointment(props) {
         return transition(SHOW);
       })
       .catch(() => transition(ERROR_SAVE, true))
+    } 
+    return
   }
 
   function confirmDelete() {
