@@ -42,15 +42,15 @@ export default function Appointment(props) {
       interviewer
     };
     if (interview.student && interview.interviewer) {
-    transition(SAVING);
-    const id = props.id
-    return axios.put(`http://localhost:8000/api/appointments/${id}`, { interview })
-      .then(() => {
-        props.bookInterview(props.id, interview);
-        return transition(SHOW);
-      })
-      .catch(() => transition(ERROR_SAVE, true))
-    } 
+      transition(SAVING);
+      const id = props.id
+      return axios.put(`http://localhost:8000/api/appointments/${id}`, { interview })
+        .then(() => {
+          props.bookInterview(props.id, interview);
+          return transition(SHOW);
+        })
+        .catch(() => transition(ERROR_SAVE, true))
+    }
     return
   }
 
@@ -76,7 +76,7 @@ export default function Appointment(props) {
   }
 
   return (
-    <article className='appointment'>
+    <article className='appointment' data-testid="appointment">
       <Header time={props.time} />
 
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
@@ -133,7 +133,6 @@ export default function Appointment(props) {
           message={message.deleteError} onClose={back}
         />
       )}
-
     </article>
   )
 };
