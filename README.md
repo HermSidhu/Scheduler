@@ -4,13 +4,13 @@ Scheduler is a single page application (SPA) that allows the user to make appoin
 
 I built this app using React, Webpack, Babel, Axios, Storybook, Webpack Dev Server. I used Jest and Cypress for testing.
 
-https://github.com/HermSidhu/Scheduler/blob/master/docs/Main-Page.png?raw=true
+!['Main page'](https://github.com/HermSidhu/Scheduler/blob/master/docs/Main-Page.png?raw=true)
 
-https://github.com/HermSidhu/Scheduler/blob/master/docs/Appointment-View.png?raw=true
+!['Appointment view'](https://github.com/HermSidhu/Scheduler/blob/master/docs/Appointment-View.png?raw=true)
 
-https://github.com/HermSidhu/Scheduler/blob/master/docs/Save-View.png?raw=true
+!['Save view'](https://github.com/HermSidhu/Scheduler/blob/master/docs/Save-View.png?raw=true)
 
-https://github.com/HermSidhu/Scheduler/blob/master/docs/Delete-Confirm.png?raw=true
+!['Confirm before delete'](https://github.com/HermSidhu/Scheduler/blob/master/docs/Delete-Confirm.png?raw=true)
 
 ## How to Use
 
