@@ -1,13 +1,11 @@
 import React from "react";
 
-import { render, cleanup, waitForElement, fireEvent, 
-  getByText, getAllByTestId, 
-  getByAltText, getByPlaceholderText, 
-  queryByText, queryByAltText } from "@testing-library/react";
+import { render, cleanup, waitForElement, fireEvent, getByText, getAllByTestId, getByAltText, getByPlaceholderText, queryByText, queryByAltText } from "@testing-library/react";
 
 import Application from "../Application";
 
 import axios from "axios";
+
 afterEach(cleanup);
 
 describe('Application', () => {
